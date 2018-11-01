@@ -8,8 +8,7 @@ yum -y --security update
 yum -y update aws-cli
 
 yum -y install \
-  awslogs jq ImageMagick
-
+  awslogs jq ImageMagick aws-cfn-bootstrap
 aws configure set default.region $REGION
 
 cp -av $WORKING_DIR/awslogs.conf /etc/awslogs/
@@ -24,7 +23,8 @@ chmod +x /usr/local/bin/convert-worker.sh
 sed -i "s|us-east-1|$REGION|g" /etc/awslogs/awscli.conf
 sed -i "s|%CLOUDWATCHLOGSGROUP%|$CLOUDWATCHLOGSGROUP|g" /etc/awslogs/awslogs.conf
 sed -i "s|%REGION%|$REGION|g" /usr/local/bin/convert-worker.sh
-sed -i "s|%S3BUCKET%|$S3BUCKET|g" /usr/local/bin/convert-worker.sh
+sed -i "s|%S3_BUCKET_IN%|$S3_BUCKET_IN|g" /usr/local/bin/convert-worker.sh
+sed -i "s|%S3_BUCKET_OUT%|$S3_BUCKET_OUT|g" /usr/local/bin/convert-worker.sh
 sed -i "s|%SQSQUEUE%|$SQSQUEUE|g" /usr/local/bin/convert-worker.sh
 
 chkconfig awslogs on && service awslogs restart
@@ -32,4 +32,6 @@ chkconfig awslogs on && service awslogs restart
 start spot-instance-interruption-notice-handler
 start convert-worker
 
-/opt/aws/bin/cfn-signal -s true -i $INSTANCE_ID "$WAITCONDITIONHANDLE"
+#/opt/aws/bin/cfn-signal -s true -i $INSTANCE_ID "$WAITCONDITIONHANDLE"
+
+/opt/aws/bin/cfn-signal -e 0 --stack $STACKNAME --resource spotFleet --region $REGION

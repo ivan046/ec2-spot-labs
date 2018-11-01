@@ -1,7 +1,8 @@
 #!/bin/bash
 
 REGION=%REGION%
-S3BUCKET=%S3BUCKET%
+S3_BUCKET_IN=%S3BUCKET_IN%
+S3_BUCKET_OUT=%S3BUCKET_OUT%
 SQSQUEUE=%SQSQUEUE%
 
 while sleep 5; do 
@@ -38,13 +39,13 @@ while sleep 5; do
 
     logger "$0: Found work to convert. Details: INPUT=$INPUT, FNAME=$FNAME, FEXT=$FEXT"
 
-    aws s3 cp s3://$S3BUCKET/$INPUT /tmp
+    aws s3 cp s3://$S3_BUCKET_IN/$INPUT /tmp
 
     convert /tmp/$INPUT /tmp/$FNAME.pdf
 
     logger "$0: Convert done. Copying to S3 and cleaning up"
 
-    aws s3 cp /tmp/$FNAME.pdf s3://$S3BUCKET
+    aws s3 cp /tmp/$FNAME.pdf s3://$S3_BUCKET_OUT
 
     rm -f /tmp/$INPUT /tmp/$FNAME.pdf
 
