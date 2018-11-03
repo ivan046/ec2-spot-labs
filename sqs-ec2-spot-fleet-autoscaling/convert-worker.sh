@@ -39,19 +39,18 @@ while sleep 5; do
 
     logger "$0: Found work to convert. Details: INPUT=$INPUT, FNAME=$FNAME, FEXT=$FEXT"
 
-    IN=`aws s3 cp s3://$S3_BUCKET_IN/$INPUT /tmp`
-    logger "$0: $IN"
-    CONVERT=`convert /tmp/$INPUT /tmp/$FNAME.pdf`
-    logger "$0: $CONVERT"
+    aws s3 cp s3://$S3_BUCKET_IN/$INPUT /tmp
+
+    convert /tmp/$INPUT /tmp/$FNAME.pdf
+
     logger "$0: Convert done. Copying to S3 and cleaning up... Stack: $STACKNAME"
 
-    OUT=`aws s3 cp /tmp/$FNAME.pdf s3://$S3_BUCKET_OUT`
-    logger "$0: $OUT"
+    aws s3 cp /tmp/$FNAME.pdf s3://$S3_BUCKET_OUT
+
     rm -f /tmp/$INPUT /tmp/$FNAME.pdf
-    CLEAN=`aws s3 rm s3://$S3_BUCKET_IN/$INPUT`
-    logger "$0: $CLEAN"
-    SQS=`aws sqs --output=json delete-message --queue-url $SQSQUEUE --receipt-handle $RECEIPT`
-    logger "$0: $SQS"
+
+    aws sqs --output=json delete-message --queue-url $SQSQUEUE --receipt-handle $RECEIPT
+
   else
 
     logger "$0: Skipping message - file not of type jpg, png, or gif. Deleting message from queue"
