@@ -43,7 +43,7 @@ while sleep 5; do
     logger "$0: $IN"
     CONVERT=`convert /tmp/$INPUT /tmp/$FNAME.pdf`
     logger "$0: $CONVERT"
-    logger "$0: Convert done. Copying to S3 and cleaning up"
+    logger "$0: Convert done. Copying to S3 and cleaning up... Stack: $STACKNAME"
 
     OUT=`aws s3 cp /tmp/$FNAME.pdf s3://$S3_BUCKET_OUT`
     logger "$0: $OUT"
