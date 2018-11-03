@@ -4,6 +4,7 @@ REGION=%REGION%
 S3_BUCKET_IN=%S3BUCKET_IN%
 S3_BUCKET_OUT=%S3BUCKET_OUT%
 SQSQUEUE=%SQSQUEUE%
+STACKNAME=%STACKNAME%
 
 while sleep 5; do 
 
@@ -48,6 +49,8 @@ while sleep 5; do
     aws s3 cp /tmp/$FNAME.pdf s3://$S3_BUCKET_OUT
 
     rm -f /tmp/$INPUT /tmp/$FNAME.pdf
+
+    aws s3 rm s3://$S3_BUCKET_IN/$INPUT
 
     aws sqs --output=json delete-message --queue-url $SQSQUEUE --receipt-handle $RECEIPT
 
