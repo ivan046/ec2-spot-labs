@@ -34,4 +34,4 @@ start convert-worker
 
 #/opt/aws/bin/cfn-signal -s true -i $INSTANCE_ID "$WAITCONDITIONHANDLE"
 
-/opt/aws/bin/cfn-signal -e 0 --stack $STACKNAME --resource spotFleet --region $REGION
+#/opt/aws/bin/cfn-signal -e 0 --stack $STACKNAME --resource spotFleet --region $REGION
