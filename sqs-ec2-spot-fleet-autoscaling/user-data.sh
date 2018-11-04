@@ -26,6 +26,7 @@ sed -i "s|%REGION%|$REGION|g" /usr/local/bin/convert-worker.sh
 sed -i "s|%S3_BUCKET_IN%|$S3_BUCKET_IN|g" /usr/local/bin/convert-worker.sh
 sed -i "s|%S3_BUCKET_OUT%|$S3_BUCKET_OUT|g" /usr/local/bin/convert-worker.sh
 sed -i "s|%SQSQUEUE%|$SQSQUEUE|g" /usr/local/bin/convert-worker.sh
+sed -i "s|%STACKNAME%|$STACKNAME|g" /usr/local/bin/convert-worker.sh
 
 chkconfig awslogs on && service awslogs restart
 
@@ -34,4 +35,4 @@ start convert-worker
 
 #/opt/aws/bin/cfn-signal -s true -i $INSTANCE_ID "$WAITCONDITIONHANDLE"
 
-#/opt/aws/bin/cfn-signal -e 0 --stack $STACKNAME --resource spotFleet --region $REGION
+/opt/aws/bin/cfn-signal -e 0 --stack $STACKNAME --resource spotFleet --region $REGION
